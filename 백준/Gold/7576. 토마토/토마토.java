@@ -1,7 +1,11 @@
-import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Scanner;
 
 class Main {
+    static int[] dx = new int[]{1, -1, 0, 0};
+    static int[] dy = new int[]{0, 0, 1, -1};
+
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         int a = scan.nextInt();
@@ -43,35 +47,18 @@ class Main {
                 while (!index_y.isEmpty()) {
                     int x = index_x.poll();
                     int y = index_y.poll();
+                    for (int i = 0; i < 4; i++) {
+                        if (x + dx[i] > -1 && x + dx[i] < a && y + dy[i] > -1 && y + dy[i] < b) {
+                            if (tomato[y + dy[i]][x + dx[i]] == 0) {
+                                tomato[y + dy[i]][x + dx[i]] = 1;
+                                move_x.add(x + dx[i]);
+                                move_y.add(y + dy[i]);
+                                check++;
+                                check_nomato++;
+                            }
+                        }
+                    }
 
-                    if (x + 1 < tomato[y].length && tomato[y][x + 1] == 0) {
-                        tomato[y][x + 1] = 1;
-                        move_x.add(x + 1);
-                        move_y.add(y);
-                        check++;
-                        check_nomato++;
-                    }
-                    if (x - 1 > -1 && tomato[y][x - 1] == 0) {
-                        tomato[y][x - 1] = 1;
-                        move_x.add(x - 1);
-                        move_y.add(y);
-                        check++;
-                        check_nomato++;
-                    }
-                    if (y + 1 < tomato.length && tomato[y + 1][x] == 0) {
-                        tomato[y + 1][x] = 1;
-                        move_x.add(x);
-                        move_y.add(y + 1);
-                        check++;
-                        check_nomato++;
-                    }
-                    if (y - 1 > -1 && tomato[y - 1][x] == 0) {
-                        tomato[y - 1][x] = 1;
-                        move_x.add(x);
-                        move_y.add(y - 1);
-                        check++;
-                        check_nomato++;
-                    }
                 }
                 if (check != 0) {
                     result++;
