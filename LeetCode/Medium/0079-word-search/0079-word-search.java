@@ -21,16 +21,17 @@ class Solution {
         if(word.length() > n*m) return false;
 
         
-        for(int i = 0; i<n; i++) {
-            for(int j = 0; j<m; j++) {
-                sb = new StringBuilder();        
-                sb.append(String.valueOf(board[i][j]));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+                if (board[i][j] != word.charAt(0)) {
+                    continue;
+                }
+
                 boolean[][] visited = new boolean[n][m];
                 visited[i][j] = true;
 
-                dfs(i, j, visited);
-                
-                if(result) {
+                if (dfs(i, j, 0, visited)) {
                     return true;
                 }
             }
@@ -39,29 +40,37 @@ class Solution {
         return false;
     }
     
-    public void dfs(int x, int y, boolean[][] visited) {
-        if(sb.length() > word.length()) return;
+    public boolean dfs(int x, int y, int index, boolean[][] visited) {
 
-        if(sb.toString().equals(word)) {
-            result = true;
-            return;
+        if (index == word.length() - 1) {
+            return true;
         }
 
-        for(int i = 0; i<4; i++) {
+        for (int i = 0; i < 4; i++) {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if(nx < n && ny < m && nx >= 0 && ny >= 0 && !visited[nx][ny]) {
-                String s = String.valueOf(board[nx][ny]);
-
-                sb.append(s);
-                visited[nx][ny] = true;
-                dfs(nx, ny, visited);
-
-                //백트래킹
-                visited[nx][ny] = false;
-                sb.deleteCharAt(sb.length()-1); //마지막 문자열 지우기
+            if (nx < 0 || nx >= n || ny < 0 || ny >= m) {
+                continue;
             }
+
+            if (visited[nx][ny]) {
+                continue;
+            }
+
+            if (board[nx][ny] != word.charAt(index + 1)) {
+                continue;
+            }
+
+            visited[nx][ny] = true;
+
+            if (dfs(nx, ny, index + 1, visited)) {
+                return true;
+            }
+
+            visited[nx][ny] = false;
         }
+
+        return false;
     }
 }
