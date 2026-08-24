@@ -20,6 +20,7 @@ class Edge implements Comparable<Edge> {
 
 class Solution {
     public int[] solution(int n, int[][] paths, int[] gates, int[] summits) {
+            
         //봉우리 set
         HashSet<Integer> summit = new HashSet<>();
         for(int s : summits) {
@@ -47,34 +48,33 @@ class Solution {
         
         //결과큐
         PriorityQueue<Edge> result = new PriorityQueue<>();
-        PriorityQueue<Edge> pq = new PriorityQueue<>();
-        int[] dist = new int[n+1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        
         for(int g : gates) {
+            //pq : 우선순위큐 (가중치에 대해 오름차순 정렬)
+            PriorityQueue<Edge> pq = new PriorityQueue<>();
             pq.add(new Edge(g, 0));
+            
+            //dist : [n]까지 갔을 때의 최소 intensity (intensity : 경로 중에서 최댓값)
+            int[] dist = new int[n+1];
+            Arrays.fill(dist, Integer.MAX_VALUE);
             dist[g] = 0;
-        }
-        
-        
-        
-        while(!pq.isEmpty()) {
-            Edge edge = pq.poll();
             
-            if(dist[edge.v] < edge.w) continue; //더 큰 가중치 경로는 갈 필요없음
-            if(summit.contains(edge.v)) { //봉우리 도착 | intensity가 가장 작은 경로니까 바로 break
-                result.add(edge);
-                continue;
-            }
-            
-            for(Edge e : graph[edge.v]) { //주변 정점
-                if(dist[e.v] > Math.max(edge.w, e.w) && !gate.contains(e.v)) {
-                    dist[e.v] = Math.max(edge.w, e.w);
-                    pq.add(new Edge(e.v, dist[e.v]));
+            while(!pq.isEmpty()) {
+                Edge edge = pq.poll();
+                
+                if(dist[edge.v] < edge.w) continue; //더 큰 가중치 경로는 갈 필요없음
+                if(summit.contains(edge.v)) { //봉우리 도착 | intensity가 가장 작은 경로니까 바로 break
+                    result.add(edge);
+                    break;
+                }
+                
+                for(Edge e : graph[edge.v]) { //주변 정점
+                    if(dist[e.v] > Math.max(edge.w, e.w) && !gate.contains(e.v)) {
+                        dist[e.v] = Math.max(edge.w, e.w);
+                        pq.add(new Edge(e.v, dist[e.v]));
+                    }
                 }
             }
         }
-        
         
         int[] answer = new int[2];
         Edge e = result.poll();
